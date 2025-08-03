@@ -35,7 +35,7 @@ import javax.xml.stream.events.XMLEvent;
  */
 public class ArticleParser {
 
-    private static final String RSS_URL = "https://slobodnadalmacija.hr/feed";
+    private static final String RSS_URL = "https://www.nasa.gov/news-release/feed/";
     private static final String ATTRIBUTE_URL = "url";
     private static final String EXT = ".jpg";
     private static final String DIR = "assets";
@@ -82,11 +82,25 @@ public class ArticleParser {
                                         article.setDescription(data);
                                     }
                                 }
-                                case ENCLOSURE -> {
-                                    if (startElement != null && article.getPicturePath() == null) {
-                                        Attribute urlAttribute = startElement.getAttributeByName(new QName(ATTRIBUTE_URL));
-                                        if (urlAttribute != null) {
-                                            handlePicture(article, urlAttribute.getValue());
+                                case CONTENT_ENCODED -> {
+                                    // Check if data is not empty and we haven't already found a picture
+                                    if (!data.isEmpty() && article.getPicturePath() == null) {
+                                        // Use basic string manipulation to find the first <img> src attribute
+                                        final String imgTag = "<img";
+                                        int imgStartIndex = data.indexOf(imgTag);
+                                        if (imgStartIndex != -1) {
+                                            final String srcAttribute = "src=\"";
+                                            int srcStartIndex = data.indexOf(srcAttribute, imgStartIndex);
+                                            if (srcStartIndex != -1) {
+                                                int urlStartIndex = srcStartIndex + srcAttribute.length();
+                                                int urlEndIndex = data.indexOf("\"", urlStartIndex);
+                                                if (urlEndIndex != -1) {
+                                                    String imageUrl = data.substring(urlStartIndex, urlEndIndex);
+                                                    // Clean up HTML entities like &#038; -> &
+                                                    imageUrl = imageUrl.replace("&#038;", "&");
+                                                    handlePicture(article, imageUrl);
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -132,7 +146,7 @@ public class ArticleParser {
         TITLE("title"),
         LINK("link"),
         DESCRIPTION("description"),
-        ENCLOSURE("enclosure"),
+        CONTENT_ENCODED("encoded"),
         PUB_DATE("pubDate");
 
         private final String name;
