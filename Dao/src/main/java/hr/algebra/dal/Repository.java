@@ -5,6 +5,7 @@
 package hr.algebra.dal;
 
 import hr.algebra.model.Article;
+import hr.algebra.model.NewsFeedUser;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,9 @@ public interface Repository {
     void deleteArticle(int id) throws Exception;
 
     Optional<Article> selectArticle(int id) throws Exception;
-
+    
     List<Article> selectArticles() throws Exception;
+    
+    Optional<NewsFeedUser> selectUser(String username) throws Exception;
 
 }

@@ -6,6 +6,7 @@ package hr.algebra.dal.sql;
 
 import hr.algebra.dal.Repository;
 import hr.algebra.model.Article;
+import hr.algebra.model.NewsFeedUser;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -30,6 +31,15 @@ public class SqlRepository implements Repository {
     private static final String DELETE_ARTICLE = "{ CALL deleteArticle (?) }";
     private static final String SELECT_ARTICLE = "{ CALL selectArticle (?) }";
     private static final String SELECT_ARTICLES = "{ CALL selectArticles }";
+    
+    private static final String USER_ID = "UserId";
+    private static final String USER_NAME = "UserName";
+    private static final String PASSWORD_HASH = "PasswordHash";
+    private static final String IS_ADMIN = "IsAdmin";
+
+    
+    private static final String SELECT_USER = "{ CALL selectUser (?) }";
+
 
     @Override
     public int createArticle(Article article) throws Exception {
@@ -115,6 +125,8 @@ public class SqlRepository implements Repository {
         return Optional.empty();
     }
 
+    
+    
     @Override
     public List<Article> selectArticles() throws Exception {
         List<Article> articles = new ArrayList<>();
@@ -133,5 +145,32 @@ public class SqlRepository implements Repository {
         }
         return articles;
     }
+    
+    
+    @Override
+    public Optional<NewsFeedUser> selectUser(String username) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_USER)) {
+  
+
+            stmt.setString(USER_NAME, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return Optional.of(new NewsFeedUser(
+                            rs.getInt(USER_ID),
+                            rs.getString(USER_NAME),
+                            rs.getString(PASSWORD_HASH),
+                            rs.getBoolean(IS_ADMIN)
+                    ));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
 
 }
+
+
+

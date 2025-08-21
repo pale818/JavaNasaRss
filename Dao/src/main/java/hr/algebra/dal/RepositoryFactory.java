@@ -10,10 +10,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author daniel.bele
- */
+
 public final class RepositoryFactory {
 
     private static final Properties properties = new Properties();

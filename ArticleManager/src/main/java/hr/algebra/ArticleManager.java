@@ -4,8 +4,13 @@
  */
 package hr.algebra;
 
+import hr.algebra.dal.Repository;
+import hr.algebra.dal.RepositoryFactory;
+import hr.algebra.model.NewsFeedUser;
 import hr.algebra.view.EditArticlesPanel;
+import hr.algebra.view.LoginPanel;
 import hr.algebra.view.UploadArticlesPanel;
+import java.util.Optional;
 
 /**
  *
@@ -15,13 +20,20 @@ public class ArticleManager extends javax.swing.JFrame {
 
     private static final String UPLOAD_ARTICLES = "Upload articles";
     private static final String EDIT_ARTICLES = "Edit articles";
+    
+    private Repository repository;
+    private NewsFeedUser loggedInUser; 
 
-    /**
-     * Creates new form ArticleManager
-     */
-    public ArticleManager() {
+    
+    public ArticleManager(NewsFeedUser user) {
+	this.loggedInUser = user;
+        repository = RepositoryFactory.getRepository();
         initComponents();
-        configurePanels();
+        try {
+            configurePanels();
+        } catch (Exception exception) {
+            System.out.println(exception);
+        }
     }
 
     /**
@@ -104,11 +116,19 @@ public class ArticleManager extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ArticleManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        java.awt.EventQueue.invokeLater(() -> {
+            // Show login dialog first
+            hr.algebra.view.LoginDialog loginDialog = new hr.algebra.view.LoginDialog(null, true);
+            loginDialog.setVisible(true);
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ArticleManager().setVisible(true);
+            // Check if login succeeded
+            NewsFeedUser user = loginDialog.getLoggedInUser();
+            if (user != null) {
+                ArticleManager app = new ArticleManager(user);
+                app.setVisible(true);
+            } else {
+                System.exit(0);
             }
         });
     }
@@ -121,9 +141,19 @@ public class ArticleManager extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tpContent;
     // End of variables declaration//GEN-END:variables
 
-    private void configurePanels() {
-        //if (user.isAdminn){}
+    
+
+    private void configurePanels() throws Exception {
+        tpContent.removeAll(); 
         tpContent.add(UPLOAD_ARTICLES, new UploadArticlesPanel());
-        tpContent.add(EDIT_ARTICLES, new EditArticlesPanel());
+        System.out.println("User is admin: " + loggedInUser.getIsAdmin());
+        if (loggedInUser.getIsAdmin()) {
+            tpContent.add(EDIT_ARTICLES, new EditArticlesPanel());
+        }
     }
+
+
+    
+
+
 }
