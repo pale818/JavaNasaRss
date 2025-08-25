@@ -29,6 +29,7 @@ public class SqlRepository implements Repository {
     private static final String CREATE_ARTICLE = "{ CALL createArticle (?,?,?,?,?,?) }";
     private static final String UPDATE_ARTICLE = "{ CALL updateArticle (?,?,?,?,?,?) }";
     private static final String DELETE_ARTICLE = "{ CALL deleteArticle (?) }";
+    private static final String DELETE_ARTICLES = "{ CALL deleteArticles }";
     private static final String SELECT_ARTICLE = "{ CALL selectArticle (?) }";
     private static final String SELECT_ARTICLES = "{ CALL selectArticles }";
     
@@ -103,6 +104,17 @@ public class SqlRepository implements Repository {
         }
     }
 
+    
+    @Override
+    public void deleteArticles() throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_ARTICLES)) {
+            stmt.executeUpdate();
+        }
+    }
+    
+    
+    
     @Override
     public Optional<Article> selectArticle(int id) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();

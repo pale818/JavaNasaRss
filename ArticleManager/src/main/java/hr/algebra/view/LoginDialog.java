@@ -26,11 +26,10 @@ public class LoginDialog extends javax.swing.JDialog {
         repository = RepositoryFactory.getRepository();
 
         LoginPanel loginPanel = new LoginPanel();
-        setContentPane(loginPanel); // set your panel as the dialog content
+        setContentPane(loginPanel); 
         pack();
         setLocationRelativeTo(parent);
 
-        // Handle login button
         loginPanel.getLoginButton().addActionListener(e -> {
             String username = loginPanel.getUsername();
             String password = new String(loginPanel.getPassword());
@@ -40,7 +39,7 @@ public class LoginDialog extends javax.swing.JDialog {
                     try {
 			if (BCrypt.checkpw(password, user.getPasswordHash())) {
                             loggedInUser = user;
-                            dispose(); // close dialog
+                            dispose(); 
                         } else {
                             JOptionPane.showMessageDialog(this,
                                     "Invalid password!", "Error", JOptionPane.ERROR_MESSAGE);

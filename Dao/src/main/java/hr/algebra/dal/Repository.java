@@ -22,6 +22,8 @@ public interface Repository {
     void updateArticle(int id, Article data) throws Exception;
 
     void deleteArticle(int id) throws Exception;
+    
+    void deleteArticles() throws Exception;
 
     Optional<Article> selectArticle(int id) throws Exception;
     

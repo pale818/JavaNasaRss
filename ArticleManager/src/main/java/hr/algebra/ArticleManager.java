@@ -8,6 +8,7 @@ import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.NewsFeedUser;
 import hr.algebra.view.EditArticlesPanel;
+import hr.algebra.view.AdminPanel;
 import hr.algebra.view.LoginPanel;
 import hr.algebra.view.UploadArticlesPanel;
 import java.util.Optional;
@@ -20,9 +21,11 @@ public class ArticleManager extends javax.swing.JFrame {
 
     private static final String UPLOAD_ARTICLES = "Upload articles";
     private static final String EDIT_ARTICLES = "Edit articles";
+    private static final String ADMIN_PANEL = "Admin articles";
     
     private Repository repository;
     private NewsFeedUser loggedInUser; 
+    
 
     
     public ArticleManager(NewsFeedUser user) {
@@ -122,7 +125,6 @@ public class ArticleManager extends javax.swing.JFrame {
             hr.algebra.view.LoginDialog loginDialog = new hr.algebra.view.LoginDialog(null, true);
             loginDialog.setVisible(true);
 
-            // Check if login succeeded
             NewsFeedUser user = loginDialog.getLoggedInUser();
             if (user != null) {
                 ArticleManager app = new ArticleManager(user);
@@ -145,10 +147,12 @@ public class ArticleManager extends javax.swing.JFrame {
 
     private void configurePanels() throws Exception {
         tpContent.removeAll(); 
+        tpContent.add(EDIT_ARTICLES, new EditArticlesPanel());
         tpContent.add(UPLOAD_ARTICLES, new UploadArticlesPanel());
+
         System.out.println("User is admin: " + loggedInUser.getIsAdmin());
         if (loggedInUser.getIsAdmin()) {
-            tpContent.add(EDIT_ARTICLES, new EditArticlesPanel());
+            tpContent.add(ADMIN_PANEL, new AdminPanel());
         }
     }
 

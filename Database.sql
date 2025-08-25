@@ -100,6 +100,20 @@ BEGIN
 END
 GO
 
+IF OBJECT_ID('deleteArticles', 'P') IS NOT NULL
+    DROP PROCEDURE deleteArticles;
+GO
+
+CREATE PROCEDURE deleteArticles
+AS
+BEGIN
+    DELETE FROM Article
+END
+GO
+
+
+
+
 --------------------------------------------------------------------------------
 -- 6. Procedure to SELECT a single article by its ID
 -- Updated to use the 'Article' table.
@@ -165,6 +179,9 @@ VALUES ('admin', '$2a$10$I29jep6QDJpHiesPJCfegeytVB/Q9xcC1qRSriJKcq68LlUuQndvK',
 INSERT INTO NewsFeedUser (username, PasswordHash, isAdmin)
 VALUES ('user', '$2a$10$c7Y9T1O0j0wQCGL8BwZpeuUH2FB8jnr06dkVTMOTx2uLrsZEJBS3G', 0);
 
+
+-- Hashed admin password: $2a$10$I29jep6QDJpHiesPJCfegeytVB/Q9xcC1qRSriJKcq68LlUuQndvK   / admin123
+-- Hashed user password: $2a$10$c7Y9T1O0j0wQCGL8BwZpeuUH2FB8jnr06dkVTMOTx2uLrsZEJBS3G    / user123
 --------------------------------------------------------------------------------
 -- 6. Procedure to SELECT user
 --------------------------------------------------------------------------------
@@ -173,12 +190,12 @@ IF OBJECT_ID('selectUser', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE selectUser
-    @UserName NVARCHAR
+    @UserName NVARCHAR(255)
 AS
 BEGIN
     SELECT
         UserId,
-		Username,
+		UserName,
         PasswordHash,
         IsAdmin
     FROM
@@ -188,6 +205,7 @@ BEGIN
 END
 GO
 
+EXEC selectUser @UserName = 'user';
 
 
 
