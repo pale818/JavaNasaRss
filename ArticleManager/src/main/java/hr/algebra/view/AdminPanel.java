@@ -6,6 +6,17 @@ package hr.algebra.view;
 
 import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
+import hr.algebra.utilities.MessageUtils;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.SwingWorker;
+import static javax.swing.text.html.HTML.Attribute.DIR;
 
 /**
  *
@@ -15,11 +26,14 @@ public class AdminPanel extends javax.swing.JPanel {
 
     
     Repository repository = RepositoryFactory.getRepository();
+    ImageIcon loadingIcon = new ImageIcon(getClass().getResource("/assets/spinner.gif"));
+    private static final String DIR = "assets";
+
     /**
      * Creates new form AdminPanel
      */
     public AdminPanel() {
-        initComponents();
+        initComponents();        
     }
 
     /**
@@ -32,6 +46,7 @@ public class AdminPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         btnDeleteArticles = new javax.swing.JButton();
+        jLblLoadingImg = new javax.swing.JLabel();
 
         btnDeleteArticles.setText("Delete Articles");
         btnDeleteArticles.addActionListener(new java.awt.event.ActionListener() {
@@ -40,6 +55,8 @@ public class AdminPanel extends javax.swing.JPanel {
             }
         });
 
+        jLblLoadingImg.setPreferredSize(new java.awt.Dimension(80, 80));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -47,28 +64,97 @@ public class AdminPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnDeleteArticles, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(199, Short.MAX_VALUE))
+                .addGap(59, 59, 59)
+                .addComponent(jLblLoadingImg, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(60, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(41, 41, 41)
-                .addComponent(btnDeleteArticles, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(226, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDeleteArticles, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLblLoadingImg, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(193, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeleteArticlesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteArticlesActionPerformed
         // TODO add your handling code here:
-        try {
+        /*try {
+            jLblLoadingImg.setIcon(loadingIcon);
             repository.deleteArticles();
         } catch (Exception exception) {
             System.out.println("error: " + exception);
-        }
+        }*/
+        
+        
+   
+        
+        
+        jLblLoadingImg.setIcon(loadingIcon);
+        jLblLoadingImg.setVisible(true);
+
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                // This runs on a background thread, so the UI won't freeze
+                repository.deleteArticles();
+                clearAssetsFolder();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                // This runs on the UI thread after doInBackground() is finished
+                try {
+                    get(); 
+                    javax.swing.JOptionPane.showMessageDialog(
+                        AdminPanel.this, 
+                        "All articles have been deleted.", 
+                        "Success", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (Exception ex) {
+                    System.out.println("Error deleting articles: " + ex);
+                    javax.swing.JOptionPane.showMessageDialog(
+                        AdminPanel.this, 
+                        "An error occurred while deleting articles.", 
+                        "Error", 
+                        javax.swing.JOptionPane.ERROR_MESSAGE
+                    );
+                } finally {
+                    jLblLoadingImg.setVisible(false);
+                    jLblLoadingImg.setIcon(null); 
+                }
+            }
+        };
+
+        //start the worker
+        worker.execute();
     }//GEN-LAST:event_btnDeleteArticlesActionPerformed
 
+    private void clearAssetsFolder() {
+
+        Path dirPath = Paths.get(DIR);
+
+        if (Files.exists(dirPath) && Files.isDirectory(dirPath)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath)) {
+                for (Path file : stream) {
+                    if (Files.isRegularFile(file)) {
+                        Files.delete(file);
+                    }
+                }
+                //MessageUtils.showInformationMessage("Success", "All asset images have been cleared.");
+            } catch (IOException ex) {
+                Logger.getLogger(EditArticlesPanel.class.getName()).log(Level.SEVERE, "Error clearing assets folder", ex);
+                MessageUtils.showErrorMessage("Error", "Could not clear all assets. A file might be in use.");
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteArticles;
+    private javax.swing.JLabel jLblLoadingImg;
     // End of variables declaration//GEN-END:variables
 }

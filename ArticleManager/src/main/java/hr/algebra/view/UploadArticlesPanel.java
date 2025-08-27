@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -25,6 +26,9 @@ public class UploadArticlesPanel extends javax.swing.JPanel {
     /**
      * Creates new form UploadArticlesPanel
      */
+    
+    ImageIcon loadingIcon = new ImageIcon(getClass().getResource("/assets/spinner.gif"));
+
     public UploadArticlesPanel() {
         initComponents();
     }
@@ -41,6 +45,7 @@ public class UploadArticlesPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         lsArticles = new javax.swing.JList<>();
         btnUploadArticles = new javax.swing.JButton();
+        lblSpinner = new javax.swing.JLabel();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -57,23 +62,32 @@ public class UploadArticlesPanel extends javax.swing.JPanel {
             }
         });
 
+        lblSpinner.setPreferredSize(new java.awt.Dimension(80, 80));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnUploadArticles, javax.swing.GroupLayout.PREFERRED_SIZE, 1160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(btnUploadArticles, javax.swing.GroupLayout.PREFERRED_SIZE, 1160, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1160, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(lblSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(553, 553, 553))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(lblSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
                 .addComponent(btnUploadArticles, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
@@ -83,6 +97,8 @@ public class UploadArticlesPanel extends javax.swing.JPanel {
         
         new Thread(() -> {
             try {
+                lblSpinner.setIcon(loadingIcon);
+                lblSpinner.setVisible(true);
                 List<Article> articles = ArticleParser.parse();
                 repository.createArticles(articles);
                 loadModel();
@@ -102,6 +118,7 @@ public class UploadArticlesPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnUploadArticles;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblSpinner;
     private javax.swing.JList<Article> lsArticles;
     // End of variables declaration//GEN-END:variables
 
@@ -123,6 +140,8 @@ public class UploadArticlesPanel extends javax.swing.JPanel {
     private void loadModel() throws Exception {
         List<Article> articles = repository.selectArticles();
         java.awt.EventQueue.invokeLater(() -> {
+            lblSpinner.setVisible(false);
+            lblSpinner.setIcon(null); 
             articlesModel.clear();
             articles.forEach(articlesModel::addElement);
             lsArticles.setModel(articlesModel);
