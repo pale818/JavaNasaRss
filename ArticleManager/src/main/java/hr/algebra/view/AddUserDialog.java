@@ -81,9 +81,7 @@ public class AddUserDialog extends javax.swing.JDialog {
         try {
             String hashed = BCrypt.hashpw(new String(pfPassword.getPassword()), BCrypt.gensalt());
             NewsFeedUser newUser = new NewsFeedUser(tfUser.getText(), hashed, false);
-            //int newUserId = repository.createUser(newUser);   
             repository.createUser(newUser);   
-            //System.out.println("User '" + newUser.getUserName() + "' created with ID: " + newUserId);
         } catch (Exception ex) {
             Logger.getLogger(AddUserDialog.class.getName()).log(Level.SEVERE, null, ex);
         }

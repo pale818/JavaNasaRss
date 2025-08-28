@@ -192,6 +192,8 @@ public class ArticleManager extends javax.swing.JFrame {
         System.out.println("User is admin: " + loggedInUser.getIsAdmin());
         if (loggedInUser.getIsAdmin()) {
             tpContent.add(ADMIN_PANEL, new AdminPanel());
+        }else{
+            jMenuBar1.remove(jAddUser);
         }
     }
 
