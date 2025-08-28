@@ -205,6 +205,34 @@ BEGIN
 END
 GO
 
+--------------------------------------------------------------------
+
+-- Make sure you run this entire block again!
+IF OBJECT_ID('createUser', 'P') IS NOT NULL
+    DROP PROCEDURE createUser;
+GO
+
+CREATE PROCEDURE createUser
+    @UserName       NVARCHAR(255),
+    @PasswordHash   NVARCHAR(255),
+    @IsAdmin        BIT,
+    @UserId         INT OUTPUT
+AS
+BEGIN
+    INSERT INTO NewsFeedUser(UserName, PasswordHash, IsAdmin)
+    VALUES (@UserName, @PasswordHash, @IsAdmin);
+
+    SET @UserId = SCOPE_IDENTITY();
+END
+GO
+
+
+
+
+
+
+
+--------------------------------------------------------------------------
 EXEC selectUser @UserName = 'user';
 
 

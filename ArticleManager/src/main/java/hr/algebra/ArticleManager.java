@@ -7,8 +7,10 @@ package hr.algebra;
 import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.NewsFeedUser;
+import hr.algebra.view.AddUserDialog;
 import hr.algebra.view.EditArticlesPanel;
 import hr.algebra.view.AdminPanel;
+import hr.algebra.view.LoginDialog;
 import hr.algebra.view.LoginPanel;
 import hr.algebra.view.UploadArticlesPanel;
 import java.util.Optional;
@@ -48,11 +50,24 @@ public class ArticleManager extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         tpContent = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         miExit = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jAddUser = new javax.swing.JMenu();
+        jNewUser = new javax.swing.JCheckBoxMenuItem();
+
+        jMenuItem1.setText("jMenuItem1");
+
+        jMenuItem2.setText("jMenuItem2");
+
+        jMenuItem3.setText("jMenuItem3");
+
+        jMenuItem4.setText("jMenuItem4");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,8 +83,18 @@ public class ArticleManager extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jAddUser.setText("Add User");
+
+        jNewUser.setSelected(true);
+        jNewUser.setText("new user");
+        jNewUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jNewUserActionPerformed(evt);
+            }
+        });
+        jAddUser.add(jNewUser);
+
+        jMenuBar1.add(jAddUser);
 
         setJMenuBar(jMenuBar1);
 
@@ -92,6 +117,14 @@ public class ArticleManager extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_miExitActionPerformed
+
+    private void jNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewUserActionPerformed
+        // TODO add your handling code here:
+        java.awt.EventQueue.invokeLater(() -> {
+            AddUserDialog addUserDialog = new AddUserDialog(null, true);
+            addUserDialog.setVisible(true);
+        });
+    }//GEN-LAST:event_jNewUserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -122,8 +155,10 @@ public class ArticleManager extends javax.swing.JFrame {
         
         java.awt.EventQueue.invokeLater(() -> {
             // Show login dialog first
-            hr.algebra.view.LoginDialog loginDialog = new hr.algebra.view.LoginDialog(null, true);
+            LoginDialog loginDialog = new LoginDialog(null, true);
             loginDialog.setVisible(true);
+            
+            
 
             NewsFeedUser user = loginDialog.getLoggedInUser();
             if (user != null) {
@@ -136,9 +171,14 @@ public class ArticleManager extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jAddUser;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JCheckBoxMenuItem jNewUser;
     private javax.swing.JMenuItem miExit;
     private javax.swing.JTabbedPane tpContent;
     // End of variables declaration//GEN-END:variables
@@ -149,7 +189,6 @@ public class ArticleManager extends javax.swing.JFrame {
         tpContent.removeAll(); 
         tpContent.add(EDIT_ARTICLES, new EditArticlesPanel());
         tpContent.add(UPLOAD_ARTICLES, new UploadArticlesPanel());
-
         System.out.println("User is admin: " + loggedInUser.getIsAdmin());
         if (loggedInUser.getIsAdmin()) {
             tpContent.add(ADMIN_PANEL, new AdminPanel());

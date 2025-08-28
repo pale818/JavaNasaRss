@@ -24,6 +24,8 @@ public interface Repository {
     void deleteArticle(int id) throws Exception;
     
     void deleteArticles() throws Exception;
+    
+    void createUser(NewsFeedUser newUser) throws Exception;
 
     Optional<Article> selectArticle(int id) throws Exception;
     

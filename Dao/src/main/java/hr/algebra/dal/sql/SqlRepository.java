@@ -32,6 +32,7 @@ public class SqlRepository implements Repository {
     private static final String DELETE_ARTICLES = "{ CALL deleteArticles }";
     private static final String SELECT_ARTICLE = "{ CALL selectArticle (?) }";
     private static final String SELECT_ARTICLES = "{ CALL selectArticles }";
+
     
     private static final String USER_ID = "UserId";
     private static final String USER_NAME = "UserName";
@@ -40,6 +41,7 @@ public class SqlRepository implements Repository {
 
     
     private static final String SELECT_USER = "{ CALL selectUser (?) }";
+    private static final String CREATE_USER = "{ CALL createUser (?,?,?,?) }";
 
 
     @Override
@@ -179,6 +181,22 @@ public class SqlRepository implements Repository {
             }
         }
         return Optional.empty();
+    }
+    
+    @Override
+    public void createUser(NewsFeedUser newUser) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); 
+             CallableStatement stmt = con.prepareCall(CREATE_USER)) {
+
+            stmt.setString(USER_NAME, newUser.getUserName());
+            stmt.setString(PASSWORD_HASH, newUser.getPasswordHash());
+            stmt.setBoolean(IS_ADMIN, false);
+            stmt.registerOutParameter(USER_ID, Types.INTEGER);
+
+            stmt.executeUpdate();
+            //return stmt.getInt(USER_ID);
+        }
     }
 
 
