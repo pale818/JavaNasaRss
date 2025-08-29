@@ -9,8 +9,11 @@ import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.Article;
 import hr.algebra.utilities.FileUtils;
 import hr.algebra.utilities.IconUtils;
+import hr.algebra.utilities.ImageTransferHandler;
 import hr.algebra.utilities.MessageUtils;
 import hr.algebra.view.model.ArticleTableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +25,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -41,6 +46,9 @@ public class EditArticlesPanel extends javax.swing.JPanel {
     private ArticleTableModel articlesTableModel;
 
     private Article selectedArticle;
+    
+    private final ImageTransferHandler imageHandler = new ImageTransferHandler();
+
 
     /**
      * Creates new form UploadArticlesPanel
@@ -474,6 +482,8 @@ public class EditArticlesPanel extends javax.swing.JPanel {
         lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
         selectedArticle = null;
     }
+    
+    
 
     private String uploadPicture() throws IOException {
         String picturePath = tfPicturePath.getText();
@@ -507,6 +517,18 @@ public class EditArticlesPanel extends javax.swing.JPanel {
         if (article.getPicturePath() != null && Files.exists(Paths.get(article.getPicturePath()))) {
             tfPicturePath.setText(article.getPicturePath());
             setIcon(lbIcon, new File(article.getPicturePath()));
+            System.out.println("SET IMAGE");
+            //preparing transferable
+            lbIcon.setTransferHandler(imageHandler);
+            lbIcon.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    JComponent comp = (JComponent) e.getSource();
+                    TransferHandler handler = comp.getTransferHandler();
+                    handler.exportAsDrag(comp, e, TransferHandler.COPY);
+                    System.out.println("MOUSE PRESSED");
+                }
+            });
         }
         tfTitle.setText(article.getTitle());
         tfLink.setText(article.getLink());

@@ -7,13 +7,14 @@ package hr.algebra;
 import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.NewsFeedUser;
+import hr.algebra.utilities.ImageTransferHandler;
 import hr.algebra.view.AddUserDialog;
 import hr.algebra.view.EditArticlesPanel;
 import hr.algebra.view.AdminPanel;
+import hr.algebra.view.ImageDropFrame;
 import hr.algebra.view.LoginDialog;
-import hr.algebra.view.LoginPanel;
 import hr.algebra.view.UploadArticlesPanel;
-import java.util.Optional;
+import javax.swing.TransferHandler;
 
 /**
  *
@@ -27,7 +28,8 @@ public class ArticleManager extends javax.swing.JFrame {
     
     private Repository repository;
     private NewsFeedUser loggedInUser; 
-    
+    private final TransferHandler imageHandler = new ImageTransferHandler();
+    private ImageDropFrame imageDropFrame = new ImageDropFrame(imageHandler);
 
     
     public ArticleManager(NewsFeedUser user) {
@@ -58,6 +60,7 @@ public class ArticleManager extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         miExit = new javax.swing.JMenuItem();
+        miBigImage = new javax.swing.JMenuItem();
         jAddUser = new javax.swing.JMenu();
         jNewUser = new javax.swing.JCheckBoxMenuItem();
 
@@ -80,6 +83,14 @@ public class ArticleManager extends javax.swing.JFrame {
             }
         });
         jMenu1.add(miExit);
+
+        miBigImage.setText("Big Image");
+        miBigImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miBigImageActionPerformed(evt);
+            }
+        });
+        jMenu1.add(miBigImage);
 
         jMenuBar1.add(jMenu1);
 
@@ -125,6 +136,11 @@ public class ArticleManager extends javax.swing.JFrame {
             addUserDialog.setVisible(true);
         });
     }//GEN-LAST:event_jNewUserActionPerformed
+
+    private void miBigImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miBigImageActionPerformed
+
+        imageDropFrame.setVisible(true);
+    }//GEN-LAST:event_miBigImageActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,6 +195,7 @@ public class ArticleManager extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JCheckBoxMenuItem jNewUser;
+    private javax.swing.JMenuItem miBigImage;
     private javax.swing.JMenuItem miExit;
     private javax.swing.JTabbedPane tpContent;
     // End of variables declaration//GEN-END:variables
