@@ -14,6 +14,9 @@ import hr.algebra.view.AdminPanel;
 import hr.algebra.view.ImageDropFrame;
 import hr.algebra.view.LoginDialog;
 import hr.algebra.view.UploadArticlesPanel;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.TransferHandler;
 
 /**
@@ -28,8 +31,8 @@ public class ArticleManager extends javax.swing.JFrame {
     
     private Repository repository;
     private NewsFeedUser loggedInUser; 
-    private final TransferHandler imageHandler = new ImageTransferHandler();
-    private ImageDropFrame imageDropFrame = new ImageDropFrame(imageHandler);
+    private final ImageTransferHandler sharedImageHandler = new ImageTransferHandler();
+    private ImageDropFrame imageDropFrame = new ImageDropFrame(sharedImageHandler);
 
     
     public ArticleManager(NewsFeedUser user) {
@@ -42,7 +45,7 @@ public class ArticleManager extends javax.swing.JFrame {
             System.out.println(exception);
         }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -204,7 +207,7 @@ public class ArticleManager extends javax.swing.JFrame {
 
     private void configurePanels() throws Exception {
         tpContent.removeAll(); 
-        tpContent.add(EDIT_ARTICLES, new EditArticlesPanel());
+        tpContent.add(EDIT_ARTICLES, new EditArticlesPanel(sharedImageHandler));
         tpContent.add(UPLOAD_ARTICLES, new UploadArticlesPanel());
         System.out.println("User is admin: " + loggedInUser.getIsAdmin());
         if (loggedInUser.getIsAdmin()) {

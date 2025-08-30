@@ -8,12 +8,13 @@ import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.Article;
 import hr.algebra.utilities.FileUtils;
-import hr.algebra.utilities.IconUtils;
 import hr.algebra.utilities.ImageTransferHandler;
 import hr.algebra.utilities.MessageUtils;
 import hr.algebra.view.model.ArticleTableModel;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
@@ -47,14 +50,27 @@ public class EditArticlesPanel extends javax.swing.JPanel {
 
     private Article selectedArticle;
     
-    private final ImageTransferHandler imageHandler = new ImageTransferHandler();
+    private ImageTransferHandler imageHandler;
 
 
     /**
      * Creates new form UploadArticlesPanel
+     * @param sharedImageHandler
      */
-    public EditArticlesPanel() {
+    public EditArticlesPanel(ImageTransferHandler sharedImageHandler) {
+        this.imageHandler = sharedImageHandler;
         initComponents();
+		
+        lbIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JComponent comp = (JComponent) e.getSource();
+                TransferHandler handler = comp.getTransferHandler();
+                if (handler != null) { 
+                    handler.exportAsDrag(comp, e, TransferHandler.COPY);
+                }
+            }
+        });
     }
 
     /**
@@ -375,7 +391,14 @@ public class EditArticlesPanel extends javax.swing.JPanel {
 
     private void setIcon(JLabel label, File file) {
         try {
-            label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
+        //label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
+        BufferedImage originalImage = ImageIO.read(file);
+        label.putClientProperty("originalImage", originalImage);
+        int width = label.getWidth() > 0 ? label.getWidth() : 100; 
+        int height = label.getHeight() > 0 ? label.getHeight() : 100; 
+        Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        label.setIcon(new ImageIcon(scaledImage));
+
         } catch (IOException ex) {
             Logger.getLogger(EditArticlesPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to set icon!");
@@ -520,15 +543,10 @@ public class EditArticlesPanel extends javax.swing.JPanel {
             System.out.println("SET IMAGE");
             //preparing transferable
             lbIcon.setTransferHandler(imageHandler);
-            lbIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    JComponent comp = (JComponent) e.getSource();
-                    TransferHandler handler = comp.getTransferHandler();
-                    handler.exportAsDrag(comp, e, TransferHandler.COPY);
-                    System.out.println("MOUSE PRESSED");
-                }
-            });
+            
+        }else {
+            // Important: clear the handler if there's no image to drag
+            lbIcon.setTransferHandler(null);
         }
         tfTitle.setText(article.getTitle());
         tfLink.setText(article.getLink());

@@ -21,6 +21,7 @@ hr\algebra\view\EditArticlesPanel$1.class
 hr\algebra\parsers\rss\ArticleParser$TagType.class
 hr\algebra\view\AdminPanel$2.class
 hr\algebra\view\EditArticlesPanel$8.class
+hr\algebra\view\ImageDropFrame$1.class
 hr\algebra\view\LoginPanel$2.class
 hr\algebra\view\LoginPanel.class
 hr\algebra\view\UploadArticlesPanel$2.class

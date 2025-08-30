@@ -1,28 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+// File: src/hr/algebra/utilities/ImageTransferHandler.java
+
 package hr.algebra.utilities;
 
 import java.awt.Image;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
-/**
- *
- * @author paola
- */
-public class ImageTransferHandler extends TransferHandler  {
-    
-    
-     @Override
+public class ImageTransferHandler extends TransferHandler {
+
+    @Override
     public int getSourceActions(JComponent c) {
         return COPY;
     }
@@ -31,16 +25,16 @@ public class ImageTransferHandler extends TransferHandler  {
     protected Transferable createTransferable(JComponent c) {
         JLabel source = (JLabel) c;
         Icon icon = source.getIcon();
-        if (icon instanceof ImageIcon) {
-            return new ImageTransferable(((ImageIcon) icon).getImage());
+        if (icon instanceof ImageIcon imageIcon) {
+            return new ImageTransferable(imageIcon.getImage());
         }
         return null;
     }
 
     @Override
     public boolean canImport(TransferSupport support) {
-        // We only support importing image data
-        return support.isDataFlavorSupported(DataFlavor.imageFlavor);
+        System.out.println("IMAGE_FLAVOR " + ImageTransferable.IMAGE_FLAVOR);
+        return support.isDataFlavorSupported(ImageTransferable.IMAGE_FLAVOR);
     }
 
     @Override
@@ -48,15 +42,30 @@ public class ImageTransferHandler extends TransferHandler  {
         if (!canImport(support)) {
             return false;
         }
-
         try {
-            // Get the image from the transferable object
-            Image image = (Image) support.getTransferable().getTransferData(DataFlavor.imageFlavor);
+            Image originalImage = (Image) support.getTransferable().getTransferData(ImageTransferable.IMAGE_FLAVOR);
+            JLabel destinationLabel = (JLabel) support.getComponent();
+            destinationLabel.putClientProperty("originalImage", originalImage);
             
-            // Set the icon on the destination component
-            JLabel destination = (JLabel) support.getComponent();
-            destination.setIcon(new ImageIcon(image));
-            destination.setText(""); // Clear the "Drop here" text
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(destinationLabel);
+            int frameWidth = frame.getContentPane().getWidth();
+            int frameHeight = frame.getContentPane().getHeight();
+
+            double imageAspect = (double) originalImage.getWidth(null) / originalImage.getHeight(null);
+            double frameAspect = (double) frameWidth / frameHeight;
+
+            int newWidth, newHeight;
+            if (imageAspect > frameAspect) {
+                newWidth = frameWidth;
+                newHeight = (int) (frameWidth / imageAspect);
+            } else {
+                newHeight = frameHeight;
+                newWidth = (int) (frameHeight * imageAspect);
+            }
+            
+            Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+            destinationLabel.setIcon(new ImageIcon(scaledImage));
+            destinationLabel.setText("");
             return true;
             
         } catch (UnsupportedFlavorException | IOException e) {

@@ -4,43 +4,75 @@
  */
 package hr.algebra.view;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.TransferHandler;
-import javax.swing.border.Border;
 
 /**
  *
  * @author paola
  */
-public class ImageDropFrame extends javax.swing.JFrame {
+public class ImageDropFrame extends JFrame {
+
 
  
-    public ImageDropFrame(TransferHandler sharedHandler) {
+    public ImageDropFrame(TransferHandler imageHandler) {
         initComponents();
         
-        lblDestination.setTransferHandler(sharedHandler);
+        lblDestination.setTransferHandler(imageHandler);
+        
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                System.out.println("SIZE:");
+                resizeImageInLabel();
+            }
+        });
 
     }
+    
+     private void resizeImageInLabel() {
+        // Get the original, full-size image we stored earlier
+        Image originalImage = (Image) lblDestination.getClientProperty("originalImage");
+
+        // If there's no image yet, do nothing
+        if (originalImage == null) {
+            return;
+        }
+
+        // Get the new size of the frame's content area
+        int targetWidth = this.getContentPane().getWidth();
+        int targetHeight = this.getContentPane().getHeight();
+        
+        // Don't try to scale to a zero-size window (happens during initialization)
+        if (targetWidth == 0 || targetHeight == 0) {
+            return;
+        }
+
+        // Scale the original image to the new size
+        Image scaledImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+        
+        // Update the label with the newly scaled image
+        lblDestination.setIcon(new ImageIcon(scaledImage));
+    }
+     
+     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         lblDestination = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblDestination, javax.swing.GroupLayout.PREFERRED_SIZE, 1098, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblDestination, javax.swing.GroupLayout.PREFERRED_SIZE, 988, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
