@@ -7,6 +7,7 @@ package hr.algebra.view;
 import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.NewsFeedUser;
+import hr.algebra.utilities.ImageTransferable;
 import javax.swing.JOptionPane;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -35,7 +36,18 @@ public class LoginDialog extends javax.swing.JDialog {
             String password = new String(loginPanel.getPassword());
 
             try {
+                // special case if user is admin
+                if ("admin".equals(username) && "admin123".equals(password)) {
+                    loggedInUser = new NewsFeedUser(username, password, true);
+                    dispose(); 
+                    return;
+                }
+                
+                // other users
+                System.out.println("Continue to check user with db");
+                
                 repository.selectUser(username).ifPresentOrElse(user -> {
+                    
                     try {
 			if (BCrypt.checkpw(password, user.getPasswordHash())) {
                             loggedInUser = user;
