@@ -8,6 +8,7 @@ import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.Article;
 import hr.algebra.utilities.FileUtils;
+import hr.algebra.utilities.IconUtils;
 import hr.algebra.utilities.ImageTransferHandler;
 import hr.algebra.utilities.MessageUtils;
 import hr.algebra.view.model.ArticleTableModel;
@@ -391,13 +392,9 @@ public class EditArticlesPanel extends javax.swing.JPanel {
 
     private void setIcon(JLabel label, File file) {
         try {
-        //label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
         BufferedImage originalImage = ImageIO.read(file);
         label.putClientProperty("originalImage", originalImage);
-        int width = label.getWidth() > 0 ? label.getWidth() : 100; 
-        int height = label.getHeight() > 0 ? label.getHeight() : 100; 
-        Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        label.setIcon(new ImageIcon(scaledImage));
+        label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
 
         } catch (IOException ex) {
             Logger.getLogger(EditArticlesPanel.class.getName()).log(Level.SEVERE, null, ex);

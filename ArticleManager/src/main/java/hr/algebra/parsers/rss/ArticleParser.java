@@ -52,7 +52,7 @@ public class ArticleParser {
             while (reader.hasNext()) {
                 XMLEvent event = reader.nextEvent();
                 switch (event.getEventType()) {
-                    case XMLStreamConstants.START_ELEMENT -> {
+                    case XMLStreamConstants.START_ELEMENT ->{
                         startElement = event.asStartElement();
                         String qName = startElement.getName().getLocalPart();
                         tagType = TagType.from(qName);
