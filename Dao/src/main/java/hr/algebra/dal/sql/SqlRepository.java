@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 
+
+//funkcije koje zovu proc iz baze
+
 public class SqlRepository implements Repository {
 
     private static final String ID_ARTICLE = "IDArticle";

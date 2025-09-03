@@ -58,10 +58,13 @@ public class EditArticlesPanel extends javax.swing.JPanel {
      * Creates new form UploadArticlesPanel
      * @param sharedImageHandler
      */
+    
+    
     public EditArticlesPanel(ImageTransferHandler sharedImageHandler) {
         this.imageHandler = sharedImageHandler;
         initComponents();
 		
+        //drag
         lbIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -391,6 +394,7 @@ public class EditArticlesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnChooseImageActionPerformed
 
     private void setIcon(JLabel label, File file) {
+        //za drag and drop uzme se slika og iz fajle, resizea za prvu labelu
         try {
         BufferedImage originalImage = ImageIO.read(file);
         label.putClientProperty("originalImage", originalImage);
@@ -542,7 +546,6 @@ public class EditArticlesPanel extends javax.swing.JPanel {
             lbIcon.setTransferHandler(imageHandler);
             
         }else {
-            // Important: clear the handler if there's no image to drag
             lbIcon.setTransferHandler(null);
         }
         tfTitle.setText(article.getTitle());

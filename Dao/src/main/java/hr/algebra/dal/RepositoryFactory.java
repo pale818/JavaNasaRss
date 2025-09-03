@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+//osigurava dase jednon nap obj od repo
 public final class RepositoryFactory {
 
     private static final Properties properties = new Properties();
@@ -31,6 +31,7 @@ public final class RepositoryFactory {
         }
     }
 
+    
     public static Repository getRepository() {
         return repository;
     }

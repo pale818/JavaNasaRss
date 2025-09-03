@@ -14,6 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
+//for drag and dropping
+
+
 public class ImageTransferHandler extends TransferHandler {
 
     @Override
@@ -21,6 +24,7 @@ public class ImageTransferHandler extends TransferHandler {
         return COPY;
     }
 
+    //slika se wrapa unutar Transferable objekta
     @Override
     protected Transferable createTransferable(JComponent c) {
         JLabel source = (JLabel) c;
@@ -31,12 +35,16 @@ public class ImageTransferHandler extends TransferHandler {
         return null;
     }
 
+    
+    //provjer dali  druga labla moze primit dropan obj
     @Override
     public boolean canImport(TransferSupport support) {
         System.out.println("IMAGE_FLAVOR " + ImageTransferable.IMAGE_FLAVOR);
         return support.isDataFlavorSupported(ImageTransferable.IMAGE_FLAVOR);
     }
 
+    
+    //handla drop
     @Override
     public boolean importData(TransferSupport support) {
         if (!canImport(support)) {

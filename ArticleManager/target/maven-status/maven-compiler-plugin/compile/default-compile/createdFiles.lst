@@ -5,6 +5,7 @@ hr\algebra\view\EditArticlesPanel.class
 hr\algebra\view\LoginPanel$3.class
 hr\algebra\parsers\rss\ArticleParser.class
 hr\algebra\view\AddUserDialog.class
+hr\algebra\view\LoginDialog$2$1.class
 hr\algebra\ArticleManager$3.class
 hr\algebra\view\AdminPanel$1.class
 hr\algebra\parsers\rss\ArticleParser$1.class
@@ -16,6 +17,7 @@ hr\algebra\view\EditArticlesPanel$4.class
 hr\algebra\view\ImageDropFrame.class
 hr\algebra\ArticleManager$1.class
 hr\algebra\view\AddUserDialog$2$1.class
+hr\algebra\view\LoginDialog$2.class
 hr\algebra\view\UploadArticlesPanel.class
 hr\algebra\view\EditArticlesPanel$1.class
 hr\algebra\parsers\rss\ArticleParser$TagType.class
@@ -30,7 +32,6 @@ hr\algebra\view\AddUserDialog$1.class
 hr\algebra\ArticleManager.class
 hr\algebra\view\UploadArticlesPanel$1.class
 hr\algebra\view\EditArticlesPanel$3.class
-hr\algebra\view\LoginDialog$1$1.class
 hr\algebra\view\LoginPanel$1.class
 hr\algebra\view\EditArticlesPanel$5.class
 hr\algebra\ArticleManager$2.class

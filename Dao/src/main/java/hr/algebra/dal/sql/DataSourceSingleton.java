@@ -17,6 +17,8 @@ import javax.sql.DataSource;
  *
  * @author dbele
  */
+
+//spajanje na bazu
 public final class DataSourceSingleton {
 
     private static final String PATH = "/config/db.properties";
@@ -49,6 +51,7 @@ public final class DataSourceSingleton {
         return instance;
     }
 
+    //citanje database connection properties iz fajle
     private static DataSource createInstance() {
         SQLServerDataSource dataSource = new SQLServerDataSource();
         dataSource.setServerName(properties.getProperty(SERVER_NAME));

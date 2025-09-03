@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
  *
  * @author daniel.bele
  */
+
+//upsivanje/ispisivanje iz baze
 public final class Article {
     
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;

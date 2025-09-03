@@ -7,14 +7,17 @@ package hr.algebra.view;
 import hr.algebra.dal.Repository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.NewsFeedUser;
-import hr.algebra.utilities.ImageTransferable;
+import java.util.Optional;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
  * @author paola
  */
+
+//okvir za dialogPanel
 public class LoginDialog extends javax.swing.JDialog {
 
     private final Repository repository;
@@ -31,41 +34,50 @@ public class LoginDialog extends javax.swing.JDialog {
         pack();
         setLocationRelativeTo(parent);
 
+        
+        
         loginPanel.getLoginButton().addActionListener(e -> {
             String username = loginPanel.getUsername();
             String password = new String(loginPanel.getPassword());
 
-            try {
-                // special case if user is admin
-                if ("admin".equals(username) && "admin123".equals(password)) {
-                    loggedInUser = new NewsFeedUser(username, password, true);
-                    dispose(); 
-                    return;
+            // special case if user is admin
+            if ("admin".equals(username) && "admin123".equals(password)) {
+                loggedInUser = new NewsFeedUser(username, password, true);
+                dispose();
+                return;
+            }
+
+            new SwingWorker<Optional<NewsFeedUser>, Void>() {
+
+                @Override
+                protected Optional<NewsFeedUser> doInBackground() throws Exception {
+                    System.out.println("Continue to check user with db on a separate thread.");
+                    return repository.selectUser(username);
                 }
-                
-                // other users
-                System.out.println("Continue to check user with db");
-                
-                repository.selectUser(username).ifPresentOrElse(user -> {
-                    
+
+                @Override
+                protected void done() {
                     try {
-			if (BCrypt.checkpw(password, user.getPasswordHash())) {
-                            loggedInUser = user;
-                            dispose(); 
-                        } else {
-                            JOptionPane.showMessageDialog(this,
-                                    "Invalid password!", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
+                        Optional<NewsFeedUser> userOptional = get();
+                        userOptional.ifPresentOrElse(user -> {
+                            if (BCrypt.checkpw(password, user.getPasswordHash())) {
+                                loggedInUser = user;
+                                dispose();
+                            } else {
+                                JOptionPane.showMessageDialog(LoginDialog.this,
+                                        "Invalid password!", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }, () -> {
+                            JOptionPane.showMessageDialog(LoginDialog.this,
+                                    "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                        });
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                        JOptionPane.showMessageDialog(LoginDialog.this,
+                                "An error occurred during login.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                }, () -> {
-                    JOptionPane.showMessageDialog(this,
-                            "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
-                });
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+                }
+            }.execute();
         });
     }
 	

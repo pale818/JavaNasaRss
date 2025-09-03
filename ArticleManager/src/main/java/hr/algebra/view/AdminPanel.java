@@ -81,14 +81,7 @@ public class AdminPanel extends javax.swing.JPanel {
 
     private void btnDeleteArticlesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteArticlesActionPerformed
         // TODO add your handling code here:
-        /*try {
-            jLblLoadingImg.setIcon(loadingIcon);
-            repository.deleteArticles();
-        } catch (Exception exception) {
-            System.out.println("error: " + exception);
-        }*/
-        
-        
+    
    
         
         
@@ -98,7 +91,6 @@ public class AdminPanel extends javax.swing.JPanel {
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                // This runs on a background thread, so the UI won't freeze
                 repository.deleteArticles();
                 clearAssetsFolder();
                 return null;
@@ -130,7 +122,6 @@ public class AdminPanel extends javax.swing.JPanel {
             }
         };
 
-        //start the worker
         worker.execute();
     }//GEN-LAST:event_btnDeleteArticlesActionPerformed
 
@@ -145,7 +136,7 @@ public class AdminPanel extends javax.swing.JPanel {
                         Files.delete(file);
                     }
                 }
-                //MessageUtils.showInformationMessage("Success", "All asset images have been cleared.");
+                
             } catch (IOException ex) {
                 Logger.getLogger(EditArticlesPanel.class.getName()).log(Level.SEVERE, "Error clearing assets folder", ex);
                 MessageUtils.showErrorMessage("Error", "Could not clear all assets. A file might be in use.");

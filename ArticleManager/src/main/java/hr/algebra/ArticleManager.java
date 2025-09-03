@@ -25,6 +25,7 @@ import javax.swing.TransferHandler;
  */
 public class ArticleManager extends javax.swing.JFrame {
 
+    
     private static final String UPLOAD_ARTICLES = "Upload articles";
     private static final String EDIT_ARTICLES = "Edit articles";
     private static final String ADMIN_PANEL = "Admin articles";
@@ -35,6 +36,7 @@ public class ArticleManager extends javax.swing.JFrame {
     private ImageDropFrame imageDropFrame = new ImageDropFrame(sharedImageHandler);
 
     
+    //admin ima mogu stv nove usere(newsFeedUser)
     public ArticleManager(NewsFeedUser user) {
 	this.loggedInUser = user;
         repository = RepositoryFactory.getRepository();
@@ -176,8 +178,6 @@ public class ArticleManager extends javax.swing.JFrame {
             // Show login dialog first
             LoginDialog loginDialog = new LoginDialog(null, true);
             loginDialog.setVisible(true);
-            
-            
 
             NewsFeedUser user = loginDialog.getLoggedInUser();
             if (user != null) {
@@ -207,7 +207,7 @@ public class ArticleManager extends javax.swing.JFrame {
 
     private void configurePanels() throws Exception {
         tpContent.removeAll(); 
-        tpContent.add(EDIT_ARTICLES, new EditArticlesPanel(sharedImageHandler));
+        tpContent.add(EDIT_ARTICLES, new EditArticlesPanel(sharedImageHandler));  
         tpContent.add(UPLOAD_ARTICLES, new UploadArticlesPanel());
         System.out.println("User is admin: " + loggedInUser.getIsAdmin());
         if (loggedInUser.getIsAdmin()) {

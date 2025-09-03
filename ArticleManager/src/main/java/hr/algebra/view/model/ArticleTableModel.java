@@ -35,7 +35,6 @@ public class ArticleTableModel extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        //return Article.class.getDeclaredFields().length - 1;
         return COLUMN_NAMES.length;
     }
 

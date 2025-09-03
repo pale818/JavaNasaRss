@@ -34,7 +34,7 @@ public class ImageTransferable implements Transferable {
     }
 
 
-
+    //vraca odredeni tip(sliku) labeli
     @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         if (isDataFlavorSupported(flavor)) {

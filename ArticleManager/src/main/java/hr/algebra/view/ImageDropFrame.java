@@ -4,6 +4,7 @@
  */
 package hr.algebra.view;
 
+import hr.algebra.utilities.IconUtils;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -27,7 +28,6 @@ public class ImageDropFrame extends JFrame {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                System.out.println("SIZE:");
                 resizeImageInLabel();
             }
         });
@@ -35,28 +35,25 @@ public class ImageDropFrame extends JFrame {
     }
     
      private void resizeImageInLabel() {
-        // Get the original, full-size image we stored earlier
+        
         Image originalImage = (Image) lblDestination.getClientProperty("originalImage");
 
-        // If there's no image yet, do nothing
         if (originalImage == null) {
             return;
         }
 
-        // Get the new size of the frame's content area
         int targetWidth = this.getContentPane().getWidth();
         int targetHeight = this.getContentPane().getHeight();
         
-        // Don't try to scale to a zero-size window (happens during initialization)
         if (targetWidth == 0 || targetHeight == 0) {
             return;
         }
 
-        // Scale the original image to the new size
         Image scaledImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
         
-        // Update the label with the newly scaled image
         lblDestination.setIcon(new ImageIcon(scaledImage));
+        
+
     }
      
      
@@ -70,9 +67,10 @@ public class ImageDropFrame extends JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblDestination, javax.swing.GroupLayout.PREFERRED_SIZE, 988, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(lblDestination, javax.swing.GroupLayout.PREFERRED_SIZE, 951, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
